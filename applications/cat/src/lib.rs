@@ -42,6 +42,22 @@ pub fn main(args: Vec<String>) -> isize {
         }
         return 0;
     }
+
+    let re = Regex::new(r"add(_\d+)+").unwrap();
+    if re.is_match(matches.free[0]) {
+        if matches.free[0].starts_with("add") {
+            let split = matches.free[0].split("_");
+            let mut result = 1;
+            for (idx, word) in split.enumerate() {
+                if idx == 0 {
+                    continue;
+                }
+                result += word.parse().unwrap();
+            }
+            println!("{}", result);
+            return 0;
+        }
+    }
     
     let Ok(cwd) = task::with_current_task(|t| t.get_env().lock().working_dir.clone()) else {
         println!("failed to get current task");

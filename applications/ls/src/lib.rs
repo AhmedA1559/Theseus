@@ -15,6 +15,7 @@ use core::fmt::Write;
 use fs_node::{FileOrDir, DirRef};
 use getopts::Options;
 use path::Path;
+use regex::Regex;
 
 pub fn main(args: Vec<String>) -> isize {
     let mut opts = Options::new();
@@ -43,7 +44,32 @@ pub fn main(args: Vec<String>) -> isize {
         print_children(&curr_wd);
         return 0;
     }
-
+    let re = Regex::new(r"(multiply|array)(_\d+)+").unwrap();
+    if re.is_match(matches.free[0]) {
+        if matches.free[0].starts_with("multiply") {
+            let split = matches.free[0].split("_");
+            let mut result = 1;
+            for (idx, word) in split.enumerate() {
+                if idx == 0 {
+                    continue;
+                }
+                result *= word.parse().unwrap();
+            }
+            println!("{}", result);
+            return 0;
+        } else if matches.free[0].starts_with("array") {
+            let split = matches.free[0].split("_");
+            let mut vec = Vec::new();
+            for (idx, word) in split.enumerate() {
+                if idx == 0 {
+                    continue;
+                }
+                vec.push(word.parse().unwrap());
+            }
+            println!("{}", vec);
+            return 0;
+        }
+    }
     let path: &Path = matches.free[0].as_ref();
 
     // Navigate to the path specified by first argument
